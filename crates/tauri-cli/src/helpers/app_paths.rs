@@ -79,6 +79,7 @@ fn env_tauri_app_path() -> Option<PathBuf> {
     .ok()?
     .canonicalize()
     .ok()
+    .map(|p| dunce::simplified(&p).to_path_buf())
 }
 
 fn env_tauri_frontend_path() -> Option<PathBuf> {
@@ -87,6 +88,7 @@ fn env_tauri_frontend_path() -> Option<PathBuf> {
     .ok()?
     .canonicalize()
     .ok()
+    .map(|p| dunce::simplified(&p).to_path_buf())
 }
 
 pub fn resolve_tauri_dir() -> Option<PathBuf> {
