@@ -81,10 +81,7 @@ pub fn run(options: Options) -> Result<()> {
   })?;
 
   if !metadata.rust_only {
-    if let Some(manager) = frontend_dir
-      .map(PackageManager::from_project)
-      .and_then(|managers| managers.into_iter().next())
-    {
+    if let Some(manager) = frontend_dir.map(PackageManager::from_project) {
       let npm_version_req = version
         .map(ToString::to_string)
         .or(metadata.version_req.as_ref().map(|v| match manager {
