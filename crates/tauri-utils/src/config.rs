@@ -1519,6 +1519,18 @@ pub struct WindowConfig {
   /// - **MacOS / Linux / iOS / Android** - Unsupported.
   #[serde(default)]
   pub browser_extensions_enabled: bool,
+
+  /// Sets whether the custom protocols should use `https://<scheme>.localhost` instead of the default `http://<scheme>.localhost` on Windows and Android. Defaults to `false`.
+  ///
+  /// ## Note
+  ///
+  /// Using a `https` scheme will NOT allow mixed content when trying to fetch `http` endpoints and therefore will not match the behavior of the `<scheme>://localhost` protocols used on macOS and Linux.
+  ///
+  /// ## Warning
+  ///
+  /// Changing this value between releases will change the IndexedDB, cookies and localstorage location and your app will not be able to access the old data.
+  #[serde(default, alias = "use-https-scheme")]
+  pub use_https_scheme: bool,
 }
 
 impl Default for WindowConfig {
@@ -1567,6 +1579,7 @@ impl Default for WindowConfig {
       proxy_url: None,
       zoom_hotkeys_enabled: false,
       browser_extensions_enabled: false,
+      use_https_scheme: false,
     }
   }
 }
@@ -2538,6 +2551,7 @@ mod build {
       let parent = opt_str_lit(self.parent.as_ref());
       let zoom_hotkeys_enabled = self.zoom_hotkeys_enabled;
       let browser_extensions_enabled = self.browser_extensions_enabled;
+      let use_https_scheme = self.use_https_scheme;
 
       literal_struct!(
         tokens,
@@ -2584,7 +2598,8 @@ mod build {
         incognito,
         parent,
         zoom_hotkeys_enabled,
-        browser_extensions_enabled
+        browser_extensions_enabled,
+        use_https_scheme
       );
     }
   }
