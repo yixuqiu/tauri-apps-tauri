@@ -1533,6 +1533,16 @@ pub struct WindowConfig {
   /// Changing this value between releases will change the IndexedDB, cookies and localstorage location and your app will not be able to access the old data.
   #[serde(default, alias = "use-https-scheme")]
   pub use_https_scheme: bool,
+  /// Enable web inspector which is usually called browser devtools. Enabled by default.
+  ///
+  /// This API works in **debug** builds, but requires `devtools` feature flag to enable it in **release** builds.
+  ///
+  /// ## Platform-specific
+  ///
+  /// - macOS: This will call private functions on **macOS**.
+  /// - Android: Open `chrome://inspect/#devices` in Chrome to get the devtools window. Wry's `WebView` devtools API isn't supported on Android.
+  /// - iOS: Open Safari > Develop > [Your Device Name] > [Your WebView] to get the devtools window.
+  pub devtools: Option<bool>,
 }
 
 impl Default for WindowConfig {
@@ -1583,6 +1593,7 @@ impl Default for WindowConfig {
       zoom_hotkeys_enabled: false,
       browser_extensions_enabled: false,
       use_https_scheme: false,
+      devtools: None,
     }
   }
 }
@@ -2556,6 +2567,7 @@ mod build {
       let zoom_hotkeys_enabled = self.zoom_hotkeys_enabled;
       let browser_extensions_enabled = self.browser_extensions_enabled;
       let use_https_scheme = self.use_https_scheme;
+      let devtools = opt_lit(self.devtools.as_ref());
 
       literal_struct!(
         tokens,
@@ -2604,7 +2616,8 @@ mod build {
         parent,
         zoom_hotkeys_enabled,
         browser_extensions_enabled,
-        use_https_scheme
+        use_https_scheme,
+        devtools
       );
     }
   }
