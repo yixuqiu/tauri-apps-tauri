@@ -505,6 +505,17 @@
             "boolean",
             "null"
           ]
+        },
+        "backgroundColor": {
+          "description": "Set the window and webview background color.\n\n ## Platform-specific:\n\n - **Windows**: alpha channel is ignored for the window layer.\n - **Windows**: On Windows 7, alpha channel is ignored for the webview layer.\n - **Windows**: On Windows 8 and newer, if alpha channel is not `0`, it will be ignored for the webview layer.",
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Color"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       },
       "additionalProperties": false
@@ -846,32 +857,96 @@
       ]
     },
     "Color": {
-      "description": "a tuple struct of RGBA colors. Each value has minimum of 0 and maximum of 255.",
-      "type": "array",
-      "items": [
+      "anyOf": [
         {
-          "type": "integer",
-          "format": "uint8",
-          "minimum": 0.0
+          "description": "Color hex string, for example: #fff, #ffffff, or #ffffffff.",
+          "type": "string",
+          "pattern": "^#?([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$"
         },
         {
-          "type": "integer",
-          "format": "uint8",
-          "minimum": 0.0
+          "description": "Array of RGB colors. Each value has minimum of 0 and maximum of 255.",
+          "type": "array",
+          "items": [
+            {
+              "type": "integer",
+              "format": "uint8",
+              "minimum": 0.0
+            },
+            {
+              "type": "integer",
+              "format": "uint8",
+              "minimum": 0.0
+            },
+            {
+              "type": "integer",
+              "format": "uint8",
+              "minimum": 0.0
+            }
+          ],
+          "maxItems": 3,
+          "minItems": 3
         },
         {
-          "type": "integer",
-          "format": "uint8",
-          "minimum": 0.0
+          "description": "Array of RGBA colors. Each value has minimum of 0 and maximum of 255.",
+          "type": "array",
+          "items": [
+            {
+              "type": "integer",
+              "format": "uint8",
+              "minimum": 0.0
+            },
+            {
+              "type": "integer",
+              "format": "uint8",
+              "minimum": 0.0
+            },
+            {
+              "type": "integer",
+              "format": "uint8",
+              "minimum": 0.0
+            },
+            {
+              "type": "integer",
+              "format": "uint8",
+              "minimum": 0.0
+            }
+          ],
+          "maxItems": 4,
+          "minItems": 4
         },
         {
-          "type": "integer",
-          "format": "uint8",
-          "minimum": 0.0
+          "description": "Object of red, green, blue, alpha color values. Each value has minimum of 0 and maximum of 255.",
+          "type": "object",
+          "required": [
+            "blue",
+            "green",
+            "red"
+          ],
+          "properties": {
+            "red": {
+              "type": "integer",
+              "format": "uint8",
+              "minimum": 0.0
+            },
+            "green": {
+              "type": "integer",
+              "format": "uint8",
+              "minimum": 0.0
+            },
+            "blue": {
+              "type": "integer",
+              "format": "uint8",
+              "minimum": 0.0
+            },
+            "alpha": {
+              "default": 255,
+              "type": "integer",
+              "format": "uint8",
+              "minimum": 0.0
+            }
+          }
         }
-      ],
-      "maxItems": 4,
-      "minItems": 4
+      ]
     },
     "SecurityConfig": {
       "description": "Security configuration.\n\n See more: <https://v2.tauri.app/reference/config/#securityconfig>",
