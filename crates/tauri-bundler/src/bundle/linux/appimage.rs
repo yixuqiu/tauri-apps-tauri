@@ -47,6 +47,8 @@ pub fn bundle_project(settings: &Settings) -> crate::Result<Vec<PathBuf>> {
       dirs::cache_dir().map_or_else(|| output_path.to_path_buf(), |p| p.join("tauri"))
     });
 
+  fs::create_dir_all(&tools_path)?;
+
   let linuxdeploy_path = prepare_tools(&tools_path, tools_arch)?;
 
   let package_dir = settings.project_out_directory().join("bundle/appimage_deb");
@@ -257,9 +259,8 @@ fn prepare_tools(tools_path: &Path, arch: &str) -> crate::Result<PathBuf> {
 fn write_and_make_executable(path: &Path, data: Vec<u8>) -> std::io::Result<()> {
   use std::os::unix::fs::PermissionsExt;
 
-  let mut file = fs::File::create(path)?;
-  file.write_all(&data)?;
-  let mut perms = file.metadata()?.permissions();
-  perms.set_mode(0o770);
+  fs::write(path, &data)?;
+  fs::set_permissions(path, fs::Permissions::from_mode(0o770))?;
+
   Ok(())
 }
