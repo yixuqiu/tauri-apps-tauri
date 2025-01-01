@@ -3,10 +3,11 @@
   "baseBranches": ["dev", "1.x"],
   "labels": ["type: chore"],
   "enabledManagers": ["cargo", "npm"],
+  "rangeStrategy": "replace",
   "packageRules": [
     {
-      "matchPackagePatterns": ["*"],
-      "semanticCommitType": "chore"
+      "semanticCommitType": "chore",
+      "matchPackageNames": ["*"]
     },
     {
       "description": "Disable node/pnpm version updates",
