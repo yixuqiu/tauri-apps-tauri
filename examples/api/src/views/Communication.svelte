@@ -1,12 +1,12 @@
 <script>
-  import { getCurrent } from '@tauri-apps/api/webviewWindow'
-  import { invoke } from '@tauri-apps/api/core'
+  import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow'
+  import { Channel, invoke } from '@tauri-apps/api/core'
   import { onMount, onDestroy } from 'svelte'
 
   export let onMessage
   let unlisten
 
-  const webviewWindow = getCurrent()
+  const webviewWindow = getCurrentWebviewWindow()
 
   onMount(async () => {
     unlisten = await webviewWindow.listen('rust-event', onMessage)
@@ -36,6 +36,22 @@
       .catch(onMessage)
   }
 
+  function echo() {
+    invoke('echo', {
+      message: 'Tauri JSON request!'
+    })
+      .then(onMessage)
+      .catch(onMessage)
+
+    invoke('echo', [1, 2, 3]).then(onMessage).catch(onMessage)
+  }
+
+  function spam() {
+    const channel = new Channel()
+    channel.onmessage = onMessage
+    invoke('spam', { channel })
+  }
+
   function emitEvent() {
     webviewWindow.emit('js-event', 'this is the payload string')
   }
@@ -49,4 +65,6 @@
   <button class="btn" id="event" on:click={emitEvent}>
     Send event to Rust
   </button>
+  <button class="btn" id="request" on:click={echo}> Echo </button>
+  <button class="btn" id="request" on:click={spam}> Spam </button>
 </div>
